@@ -12,7 +12,7 @@ PS_HEIGHT = 36.0;
 PS_TERMINAL_WIDTH = 20.0;
 
 // Screws on bottom (horizontal plane).
-PS_H_SCREWS_Y = 51.5;  // From the far side.
+PS_H_SCREWS_Y = PS_DEPTH - 51.5;
 PS_H_SCREW_1_X = 20.5;
 PS_H_SCREW_2_X = PS_H_SCREW_1_X + 55.0;
 
@@ -25,7 +25,7 @@ PS_V_SCREW_2_X = PS_V_SCREW_1_X + 74.0;
 PS_SCREW_R = 3.0 / 2.0;  // For M3.
 
 // U-shaped notch on bottom (horizontal plane).
-PS_H_U_NOTCH_Y = 36.0;  // From the far side.
+PS_H_U_NOTCH_Y = PS_DEPTH - 36.0;
 PS_V_U_NOTCH_Z = 28.0;
 
 PS_U_NOTCH_X = 4.5 + 89.0;
@@ -36,10 +36,10 @@ PS_U_NOTCH_WIDTH = 5.5;
 PS_HAS_ADDITIONAL_MOUNT_HOLES = true;
 
 PS_H_HOLE_X = 4.5;
-PS_H_HOLE_Y = PS_H_U_NOTCH_Y + 55.5;  // From the far side.
+PS_H_HOLE_Y = PS_H_U_NOTCH_Y - 55.5;
 
 PS_V_HOLE_X = 6.5;
-PS_V_HOLE_Z = 7.0;  // From top.
+PS_V_HOLE_Z = PS_HEIGHT - 7.0;
 
 PS_HOLE_R = 3.5 / 2.0;
 
@@ -77,31 +77,31 @@ OA = 0.1;
 
 module basic_enclosure() {
     difference() {
-        cube([
-                PS_WIDTH + WALL_THICKNESS + CABLING_WIDTH + T,
-                PS_DEPTH + (WALL_THICKNESS + T) * 2.0,
-                PS_HEIGHT + (WALL_THICKNESS + T) * 2.0,
-        ]);
-
         translate([
-                WALL_THICKNESS + CABLING_WIDTH + PS_TERMINAL_WIDTH,
-                WALL_THICKNESS,
-                WALL_THICKNESS]) {
+                -WALL_THICKNESS - T,
+                -WALL_THICKNESS - T,
+                -WALL_THICKNESS - T]) {
             cube([
-                PS_WIDTH - PS_TERMINAL_WIDTH + T + O,
-                PS_DEPTH + WALL_THICKNESS + T * 2.0 + O,
-                PS_HEIGHT + WALL_THICKNESS + T * 2.0 + O]);
+                    PS_WIDTH + WALL_THICKNESS + CABLING_WIDTH + T,
+                    PS_DEPTH + (WALL_THICKNESS + T) * 2.0,
+                    PS_HEIGHT + (WALL_THICKNESS + T) * 2.0,
+            ]);
         }
 
         translate([
-                WALL_THICKNESS,
-                WALL_THICKNESS,
-                WALL_THICKNESS]) {
+                -T + CABLING_WIDTH + PS_TERMINAL_WIDTH,
+                -T,
+                -T]) {
             cube([
+                    PS_WIDTH - PS_TERMINAL_WIDTH + T + O,
+                    PS_DEPTH + WALL_THICKNESS + T * 2.0 + O,
+                    PS_HEIGHT + WALL_THICKNESS + T * 2.0 + O]);
+        }
+
+        translate([-T, -T, -T]) cube([
                 PS_TERMINAL_WIDTH + CABLING_WIDTH + T + O,
                 PS_DEPTH + T * 2.0,
                 PS_HEIGHT + T * 2.0]);
-        }
     }
 }
 
@@ -110,9 +110,9 @@ module mount_screw_holes() {
     // Horizontal plane.
     for (x = [PS_H_SCREW_1_X, PS_H_SCREW_2_X]) {
         translate([
-                WALL_THICKNESS + T + CABLING_WIDTH + x,
-                WALL_THICKNESS + T + PS_DEPTH - PS_H_SCREWS_Y,
-                WALL_THICKNESS / 2.0]) {
+                CABLING_WIDTH + x,
+                PS_H_SCREWS_Y,
+                -O]) {
             cylinder(
                     WALL_THICKNESS + O * 2.0,
                     PS_SCREW_R + T, PS_SCREW_R + T,
@@ -123,9 +123,9 @@ module mount_screw_holes() {
     // Vertical plane.
     for (x = [PS_V_SCREW_1_X, PS_V_SCREW_2_X]) {
         translate([
-                WALL_THICKNESS + T + CABLING_WIDTH + x,
-                WALL_THICKNESS / 2.0,
-                WALL_THICKNESS + T + PS_V_SCREWS_Z]) {
+                CABLING_WIDTH + x,
+                -O,
+                PS_V_SCREWS_Z]) {
             rotate([90.0, 0.0, 0.0]) cylinder(
                     WALL_THICKNESS + O * 2.0,
                     PS_SCREW_R + T, PS_SCREW_R + T,
@@ -138,17 +138,16 @@ module mount_screw_holes() {
 module legs() {
     for (
             x = [
-                LEG_DISTANCE + LEG_TOP_R,
-                PS_WIDTH + WALL_THICKNESS + CABLING_WIDTH + T
-                    - (LEG_DISTANCE + LEG_TOP_R)],
+                LEG_DISTANCE + LEG_TOP_R - (WALL_THICKNESS + T),
+                PS_WIDTH + CABLING_WIDTH - (LEG_DISTANCE + LEG_TOP_R)],
             y = [
-                LEG_DISTANCE + LEG_TOP_R,
-                PS_DEPTH + (WALL_THICKNESS + T) * 2.0
+                LEG_DISTANCE + LEG_TOP_R - (WALL_THICKNESS + T),
+                PS_DEPTH + WALL_THICKNESS + T
                     - (LEG_DISTANCE + LEG_TOP_R)]) {
         translate([
                 x,
                 y,
-                -LEG_H]) {
+                -LEG_H - (WALL_THICKNESS + T)]) {
             cylinder(
                     LEG_H + OA,
                     LEG_BOTTOM_R,
@@ -160,13 +159,13 @@ module legs() {
 
 
 module u_cut() {
-    translate([0.0, 0.0, -O]) {
+    translate([0.0, 0.0, -O - WALL_THICKNESS - T]) {
         cylinder(
                 WALL_THICKNESS + O * 2.0,
                 PS_U_NOTCH_R + T,
                 PS_U_NOTCH_R + T,
                 false, $fn=64);
-        translate([0.0, - (PS_U_NOTCH_R + T), 0.0]) cube([
+        translate([0.0, -(PS_U_NOTCH_R + T), 0.0]) cube([
                 PS_U_NOTCH_WIDTH + O,
                 (PS_U_NOTCH_R + T) * 2.0,
                 WALL_THICKNESS + O * 2.0]);
@@ -177,15 +176,15 @@ module u_cut() {
 module u_notches() {
     // Horizontal plane.
     translate([
-            WALL_THICKNESS + CABLING_WIDTH + PS_U_NOTCH_X,
-            PS_DEPTH + WALL_THICKNESS + T - PS_H_U_NOTCH_Y,
+            CABLING_WIDTH + PS_U_NOTCH_X,
+            PS_H_U_NOTCH_Y,
             0.0]) {
         u_cut();
     }
 
     // Vertical plane.
     translate([
-            WALL_THICKNESS + CABLING_WIDTH + PS_U_NOTCH_X,
+            CABLING_WIDTH + PS_U_NOTCH_X,
             0.0,
             PS_V_U_NOTCH_Z]) {
         rotate([-90.0, 0.0, 0.0]) u_cut();
@@ -195,14 +194,14 @@ module u_notches() {
 
 module mnt_hole_plus_tool_hole(distance) {
     // Screw hole.
-    translate([0.0, 0.0, -O]) cylinder(
+    translate([0.0, 0.0, -O - WALL_THICKNESS - T]) cylinder(
             WALL_THICKNESS + O * 2.0,
             PS_HOLE_R + T,
             PS_HOLE_R + T,
             false, $fn=64);
 
     // Screwdriver hole.
-    translate([0.0, 0.0, distance - O]) cylinder(
+    translate([0.0, 0.0, distance - O - WALL_THICKNESS]) cylinder(
             WALL_THICKNESS + O * 2.0,
             TOOL_HOLE_R + T,
             TOOL_HOLE_R + T,
@@ -213,17 +212,17 @@ module mnt_hole_plus_tool_hole(distance) {
 module additional_mount_holes() {
     // Horizontal plane.
     translate([
-            WALL_THICKNESS + T + CABLING_WIDTH + PS_H_HOLE_X,
-            PS_DEPTH + WALL_THICKNESS + T - PS_H_HOLE_Y,
+            CABLING_WIDTH + PS_H_HOLE_X,
+            PS_H_HOLE_Y,
             0.0]) {
         mnt_hole_plus_tool_hole(WALL_THICKNESS + T + PS_HEIGHT);
     }
 
     // Vertical plane.
     translate([
-            WALL_THICKNESS + T + CABLING_WIDTH + PS_V_HOLE_X,
+            CABLING_WIDTH + PS_V_HOLE_X,
             0.0,
-            WALL_THICKNESS + T + PS_HEIGHT - PS_V_HOLE_Z]) {
+            PS_V_HOLE_Z]) {
         rotate([-90.0, 0.0, 0.0]) {
             mnt_hole_plus_tool_hole(WALL_THICKNESS + T + PS_DEPTH);
         }
