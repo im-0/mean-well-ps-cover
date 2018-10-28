@@ -43,6 +43,10 @@ PS_V_HOLE_Z = PS_HEIGHT - 7.0;
 
 PS_HOLE_R = 3.5 / 2.0;
 
+// Voltage adjustment potentiometer.
+PS_VOLT_ADJ_X = 5.5;
+PS_VOLT_ADJ_Y = 22.5;
+
 /*
  * Sizes not related to power supply itself.
  */
@@ -340,6 +344,15 @@ module cable_holders(negative_only=false) {
 }
 
 
+module voltage_adjust_hole() {
+    translate([PS_VOLT_ADJ_X, PS_VOLT_ADJ_Y, PS_HEIGHT + T - O]) cylinder(
+            WALL_THICKNESS + O * 2.0,
+            TOOL_HOLE_R + T,
+            TOOL_HOLE_R + T,
+            false, $fn=64);
+}
+
+
 module final_enclosure() {
     difference() {
         basic_enclosure();
@@ -351,6 +364,7 @@ module final_enclosure() {
         }
 
         cable_holders(true);
+        voltage_adjust_hole();
     }
 
     if (HAS_LEGS) {
