@@ -50,7 +50,7 @@ PS_HOLE_R = 3.5 / 2.0;
 WALL_THICKNESS = 1.5;
 
 // Add some space for cables (near terminals).
-CABLING_WIDTH = 15.0;
+CABLING_WIDTH = 25.0;
 
 // Tolerance, to make sure that everything will fit in.
 T = 0.2;
