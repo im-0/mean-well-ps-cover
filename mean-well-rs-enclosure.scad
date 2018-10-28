@@ -36,6 +36,13 @@ CABLING_WIDTH = 15.0;
 // Tolerance, to make sure that everything will fit in.
 T = 0.2;
 
+HAS_LEGS = true;
+LEG_H = 3.5;
+LEG_TOP_R = 16.0 / 2.0;
+LEG_BOTTOM_R = 8.0 / 2.0;
+// Distance to edge.
+LEG_DISTANCE = 1.0;
+
 /*
  * Other sizes.
  * Most probably you do not need to modify this.
@@ -43,6 +50,8 @@ T = 0.2;
 
 // Overlap, used only for geometry subtraction.
 O = 1.0;
+// Overlap, used only for geometry addition.
+OA = 0.1;
 
 
 module basic_enclosure() {
@@ -105,10 +114,38 @@ module mount_screw_holes() {
 }
 
 
+module legs() {
+    for (
+            x = [
+                LEG_DISTANCE + LEG_TOP_R,
+                PS_WIDTH + WALL_THICKNESS + CABLING_WIDTH + T
+                    - (LEG_DISTANCE + LEG_TOP_R)],
+            y = [
+                LEG_DISTANCE + LEG_TOP_R,
+                PS_DEPTH + (WALL_THICKNESS + T) * 2.0
+                    - (LEG_DISTANCE + LEG_TOP_R)]) {
+        translate([
+                x,
+                y,
+                -LEG_H]) {
+            cylinder(
+                    LEG_H + OA,
+                    LEG_BOTTOM_R,
+                    LEG_TOP_R,
+                    false, $fn=64);
+        }
+    }
+}
+
+
 module final_enclosure() {
     difference() {
         basic_enclosure();
         mount_screw_holes();
+    }
+
+    if (HAS_LEGS) {
+        legs();
     }
 }
 
