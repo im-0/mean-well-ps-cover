@@ -32,6 +32,17 @@ PS_U_NOTCH_X = 4.5 + 89.0;
 PS_U_NOTCH_R = 3.5 / 2;
 PS_U_NOTCH_WIDTH = 5.5;
 
+// Additional mounting holes.
+PS_HAS_ADDITIONAL_MOUNT_HOLES = true;
+
+PS_H_HOLE_X = 4.5;
+PS_H_HOLE_Y = PS_H_U_NOTCH_Y + 55.5;  // From the far side.
+
+PS_V_HOLE_X = 6.5;
+PS_V_HOLE_Z = 7.0;  // From top.
+
+PS_HOLE_R = 3.5 / 2.0;
+
 /*
  * Sizes not related to power supply itself.
  */
@@ -50,6 +61,8 @@ LEG_TOP_R = 16.0 / 2.0;
 LEG_BOTTOM_R = 8.0 / 2.0;
 // Distance to edge.
 LEG_DISTANCE = 1.0;
+
+TOOL_HOLE_R = 3.0;
 
 /*
  * Other sizes.
@@ -180,11 +193,53 @@ module u_notches() {
 }
 
 
+module mnt_hole_plus_tool_hole(distance) {
+    // Screw hole.
+    translate([0.0, 0.0, -O]) cylinder(
+            WALL_THICKNESS + O * 2.0,
+            PS_HOLE_R + T,
+            PS_HOLE_R + T,
+            false, $fn=64);
+
+    // Screwdriver hole.
+    translate([0.0, 0.0, distance - O]) cylinder(
+            WALL_THICKNESS + O * 2.0,
+            TOOL_HOLE_R + T,
+            TOOL_HOLE_R + T,
+            false, $fn=64);
+}
+
+
+module additional_mount_holes() {
+    // Horizontal plane.
+    translate([
+            WALL_THICKNESS + T + CABLING_WIDTH + PS_H_HOLE_X,
+            PS_DEPTH + WALL_THICKNESS + T - PS_H_HOLE_Y,
+            0.0]) {
+        mnt_hole_plus_tool_hole(WALL_THICKNESS + T + PS_HEIGHT);
+    }
+
+    // Vertical plane.
+    translate([
+            WALL_THICKNESS + T + CABLING_WIDTH + PS_V_HOLE_X,
+            0.0,
+            WALL_THICKNESS + T + PS_HEIGHT - PS_V_HOLE_Z]) {
+        rotate([-90.0, 0.0, 0.0]) {
+            mnt_hole_plus_tool_hole(WALL_THICKNESS + T + PS_DEPTH);
+        }
+    }
+}
+
+
 module final_enclosure() {
     difference() {
         basic_enclosure();
         mount_screw_holes();
         u_notches();
+
+        if (PS_HAS_ADDITIONAL_MOUNT_HOLES) {
+            additional_mount_holes();
+        }
     }
 
     if (HAS_LEGS) {
