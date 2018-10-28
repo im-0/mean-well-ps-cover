@@ -12,7 +12,7 @@ PS_HEIGHT = 36.0;
 PS_TERMINAL_WIDTH = 20.0;
 
 // Screws on bottom (horizontal plane).
-PS_H_SCREWS_Y = 51.5;
+PS_H_SCREWS_Y = 51.5;  // From the far side.
 PS_H_SCREW_1_X = 20.5;
 PS_H_SCREW_2_X = PS_H_SCREW_1_X + 55.0;
 
@@ -23,6 +23,14 @@ PS_V_SCREW_2_X = PS_V_SCREW_1_X + 74.0;
 
 // Mounting screw hole radius.
 PS_SCREW_R = 3.0 / 2.0;  // For M3.
+
+// U-shaped notch on bottom (horizontal plane).
+PS_H_U_NOTCH_Y = 36.0;  // From the far side.
+PS_V_U_NOTCH_Z = 28.0;
+
+PS_U_NOTCH_X = 4.5 + 89.0;
+PS_U_NOTCH_R = 3.5 / 2;
+PS_U_NOTCH_WIDTH = 5.5;
 
 /*
  * Sizes not related to power supply itself.
@@ -138,10 +146,45 @@ module legs() {
 }
 
 
+module u_cut() {
+    translate([0.0, 0.0, -O]) {
+        cylinder(
+                WALL_THICKNESS + O * 2.0,
+                PS_U_NOTCH_R + T,
+                PS_U_NOTCH_R + T,
+                false, $fn=64);
+        translate([0.0, - (PS_U_NOTCH_R + T), 0.0]) cube([
+                PS_U_NOTCH_WIDTH + O,
+                (PS_U_NOTCH_R + T) * 2.0,
+                WALL_THICKNESS + O * 2.0]);
+    }
+}
+
+
+module u_notches() {
+    // Horizontal plane.
+    translate([
+            WALL_THICKNESS + CABLING_WIDTH + PS_U_NOTCH_X,
+            PS_DEPTH + WALL_THICKNESS + T - PS_H_U_NOTCH_Y,
+            0.0]) {
+        u_cut();
+    }
+
+    // Vertical plane.
+    translate([
+            WALL_THICKNESS + CABLING_WIDTH + PS_U_NOTCH_X,
+            0.0,
+            PS_V_U_NOTCH_Z]) {
+        rotate([-90.0, 0.0, 0.0]) u_cut();
+    }
+}
+
+
 module final_enclosure() {
     difference() {
         basic_enclosure();
         mount_screw_holes();
+        u_notches();
     }
 
     if (HAS_LEGS) {
