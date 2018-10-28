@@ -333,7 +333,9 @@ module cable_holders(negative_only=false) {
         cable_r = holder[0];
         holder_y = holder[1];
 
-        translate([-T - CABLING_WIDTH, holder_y, -T]) cable_holder(cable_r, negative_only);
+        translate([-T - CABLING_WIDTH, holder_y, -T]) {
+            cable_holder(cable_r, negative_only);
+        }
     }
 }
 
