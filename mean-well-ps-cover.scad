@@ -182,56 +182,35 @@ module additional_mount_holes() {
 }
 
 
-module cable_holder_holes(cable_r, holder_w, holder_d, holder_h, only_external=false) {
+function diagonal(a, b) = sqrt(a * a + b * b);
+ZIP_TIE_DIAG = diagonal(ZIP_TIE_HEAD_W, ZIP_TIE_HEAD_H);
+
+
+module cable_holder_external_holes(cable_r, holder_w, holder_d, holder_h) {
     zip_tie_head_notch_w = ZIP_TIE_HEAD_D + T * 2.0;
-    zip_tie_head_notch_d = ZIP_TIE_HEAD_W * 2.0 + (cable_r + T) * 2.0;
+    zip_tie_head_notch_d = ZIP_TIE_DIAG * 2.0 + (cable_r + T) * 2.0;
+    zip_tie_head_notch_h = ZIP_TIE_HEAD_H + T + WALL_THICKNESS + O;
     translate([
             holder_w / 2.0 - zip_tie_head_notch_w / 2.0,
             -zip_tie_head_notch_d / 2.0,
             -WALL_THICKNESS - O]) {
-        #cube([
-                zip_tie_head_notch_w,
-                zip_tie_head_notch_d,
-                ZIP_TIE_HEAD_H + T + WALL_THICKNESS + O]);
-    }
+        difference() {
+            cube([
+                    zip_tie_head_notch_w,
+                    zip_tie_head_notch_d,
+                    zip_tie_head_notch_h]);
 
-    if (!only_external) {
-        zip_tie_hole_w = ZIP_TIE_D + T * 2.0;
-        zip_tie_hole_d = ZIP_TIE_H + T * 2.0;
-        for (y = [cable_r + T - T * 2.0, -zip_tie_hole_d - cable_r - T]) {
-            translate([
-                    holder_w / 2.0 - zip_tie_hole_w / 2.0,
-                    y,
-                    0.0]) {
-                #cube([
-                        zip_tie_hole_w,
-                        zip_tie_hole_d + T * 2.0,
-                        holder_h + O]);
+            translate([-O, zip_tie_head_notch_d / 2.0, zip_tie_head_notch_h]) {
+                zip_tie_tail_cyl_r = ZIP_TIE_HEAD_H + T + WALL_THICKNESS + O / 2.0;
+                zip_tie_tail_cyl_y_scale = (cable_r + T) / zip_tie_tail_cyl_r;
+                scale([1.0, zip_tie_tail_cyl_y_scale, 1.0]) {
+                    rotate([0.0, 90.0, 0.0]) cylinder(
+                            zip_tie_head_notch_w + O * 2.0,
+                            zip_tie_tail_cyl_r,
+                            zip_tie_tail_cyl_r,
+                            false, $fn = 64);
+                }
             }
-        }
-
-        d = holder_d / 2.0 - cable_r - T + O;
-        for (y = [cable_r + T - T * 2.0, -d - cable_r - T]) {
-            translate([
-                    holder_w / 2.0 + zip_tie_hole_w / 2.0 - T,
-                    y,
-                    holder_h - cable_r - T]) {
-                #cube([
-                        holder_w / 2.0 - zip_tie_hole_w / 2.0 + O + T,
-                        d + T * 2.0,
-                        cable_r + T + O]);
-            }
-        }
-
-        d2 = (cable_r + T) * 2.0 + zip_tie_hole_d;
-        translate([
-                holder_w / 2.0 - zip_tie_hole_w / 2.0,
-                -d2 / 2.0,
-                holder_h - cable_r * 0.8 - T]) {
-            #cube([
-                    holder_w / 2.0 + zip_tie_hole_w / 2.0 + O,
-                    d2,
-                    cable_r + T + O]);
         }
     }
 
@@ -239,7 +218,7 @@ module cable_holder_holes(cable_r, holder_w, holder_d, holder_h, only_external=f
             -WALL_THICKNESS - O,
             0.0,
             cable_r + T + ZIP_TIE_HEAD_H + T + CABLE_HOLDER_H_ADD]) {
-        rotate([0.0, 90.0, 0.0]) #cylinder(
+        rotate([0.0, 90.0, 0.0]) cylinder(
                 WALL_THICKNESS + O * 2.0
                     + CABLE_HOLDER_W_ADD + ZIP_TIE_HEAD_D + T * 2.0,
                 cable_r + T,
@@ -249,31 +228,109 @@ module cable_holder_holes(cable_r, holder_w, holder_d, holder_h, only_external=f
 }
 
 
-module cable_holder(cable_r, external_holes=false) {
-    holder_w = CABLE_HOLDER_W_ADD + ZIP_TIE_HEAD_D + T * 2.0;
-    holder_d = CABLE_HOLDER_D_ADD + ZIP_TIE_HEAD_W * 2.0 + (cable_r + T) * 2.0;
-    holder_h = CABLE_HOLDER_H_ADD + ZIP_TIE_HEAD_H + T + (cable_r + T);
-
-    difference() {
-        if (!external_holes) {
-            translate([-OA, -holder_d / 2.0, -OA]) cube([
-                    holder_w + OA,
-                    holder_d,
-                    holder_h + OA]);
-        }
-
-        cable_holder_holes(cable_r, holder_w, holder_d, holder_h, external_holes);
+module cable_holder_guide_hole(hole_w, hole_r) {
+    rotate([0.0, 90.0, 0.0]) difference() {
+        cylinder(
+                hole_w,
+                hole_r,
+                hole_r,
+                false, $fn=64);
+        translate([0.0, -(hole_r + O), -O]) cube([
+                hole_r + O,
+                (hole_r + O) * 2.0,
+                hole_w + O * 2.0]);
     }
 }
 
 
-module cable_holders(negative_only=false) {
+module cable_holder_holes(cable_r, holder_w, holder_d, holder_h) {
+    zip_tie_hole_w = ZIP_TIE_D + T * 2.0;
+    zip_tie_hole_d = ZIP_TIE_H + T * 2.0;
+
+    for (y = [cable_r + T, -zip_tie_hole_d - cable_r - T]) {
+        translate([
+                holder_w / 2.0 - zip_tie_hole_w / 2.0,
+                y,
+                0.0]) {
+            cube([
+                    zip_tie_hole_w,
+                    zip_tie_hole_d,
+                    holder_h + OA]);
+        }
+    }
+
+    zip_tie_guide_hole_r = cable_r + T + zip_tie_hole_d;
+    zip_tie_guide_hole_r_o = zip_tie_guide_hole_r - ZIP_TIE_GUIDE_OVERLAP;
+
+    translate([
+            (holder_w - zip_tie_hole_w) / 2.0,
+            0.0,
+            cable_r + T + ZIP_TIE_HEAD_H + T + CABLE_HOLDER_H_ADD]) {
+        cable_holder_guide_hole(zip_tie_hole_w, zip_tie_guide_hole_r);
+
+        translate([zip_tie_hole_w - OA, 0.0, 0.0]) {
+            cable_holder_guide_hole(
+                    (holder_w - zip_tie_hole_w) / 2.0 + O + OA,
+                    zip_tie_guide_hole_r_o);
+        }
+
+        translate([0.0, -zip_tie_guide_hole_r, -cable_r / 2.0]) {
+            cube([
+                    (holder_w + zip_tie_hole_w) / 2.0 + O,
+                    zip_tie_guide_hole_r * 2.0,
+                    cable_r / 2.0 + OA]);
+        }
+    }
+}
+
+
+module cable_holder(cable_r, only_external_holes=false) {
+    holder_w = CABLE_HOLDER_W_ADD + ZIP_TIE_HEAD_D + T * 2.0;
+    holder_d = CABLE_HOLDER_D_ADD + ZIP_TIE_DIAG * 2.0 + (cable_r + T) * 2.0;
+    holder_h = CABLE_HOLDER_H_ADD + ZIP_TIE_HEAD_H + T + (cable_r + T);
+
+    difference() {
+        if (!only_external_holes) {
+            translate([-OA, 0.0, -OA]) {
+                translate([0.0, -holder_d / 2.0, 0.0]) cube([
+                        holder_w + OA,
+                        holder_d,
+                        holder_h + OA]);
+
+                translate([0.0, 0.0, holder_h]) rotate([0.0, 90.0, 0.0]) {
+                    difference() {
+                        zip_tie_guide_r = (cable_r + T)
+                                + (ZIP_TIE_H + T * 2.0) + ZIP_TIE_GUIDE_THICKNESS;
+                        cylinder(
+                                holder_w + OA,
+                                zip_tie_guide_r,
+                                zip_tie_guide_r,
+                                false, $fn=128);
+                        // Cut bottom half.
+                        translate([OA, -zip_tie_guide_r - O, -O]) #cube([
+                                zip_tie_guide_r + O - OA,
+                                (zip_tie_guide_r + O) * 2.0,
+                                holder_w + O * 2.0]);
+                    }
+                }
+            }
+        }
+
+        if (!only_external_holes) {
+            #cable_holder_holes(cable_r, holder_w, holder_d, holder_h);
+        }
+        #cable_holder_external_holes(cable_r, holder_w, holder_d, holder_h);
+    }
+}
+
+
+module cable_holders(only_external_holes=false) {
     for (holder = CABLE_HOLDERS) {
         cable_r = holder[0];
         holder_y = holder[1];
 
         translate([-TPS - CABLING_WIDTH, holder_y, -TPS]) {
-            cable_holder(cable_r, negative_only);
+            cable_holder(cable_r, only_external_holes);
         }
     }
 }
