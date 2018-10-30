@@ -43,9 +43,6 @@ LEGS = [
     [PS_WIDTH - (8.0 + LEG_TOP_R),                                                          1.0 + LEG_TOP_R],
     [PS_WIDTH - (8.0 + LEG_TOP_R),                                                          PS_DEPTH - (1.0 + LEG_TOP_R)],
 ];
-// Distance to edge.
-LEG_X_DISTANCE = 8.0;
-LEG_Y_DISTANCE = 1.0;
 
 TOOL_HOLE_R = 3.0;
 
