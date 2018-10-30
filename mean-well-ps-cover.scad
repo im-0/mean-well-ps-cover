@@ -213,7 +213,7 @@ module cable_holder_external_holes(cable_r, holder_w) {
             -zip_tie_head_notch_d / 2.0,
             -WALL_THICKNESS - O]) {
         difference() {
-            cube([
+            #cube([
                     zip_tie_head_notch_w,
                     zip_tie_head_notch_d,
                     zip_tie_head_notch_h]);
@@ -236,7 +236,7 @@ module cable_holder_external_holes(cable_r, holder_w) {
             -WALL_THICKNESS - O,
             0.0,
             cable_r + T + ZIP_TIE_HEAD_H + T + CABLE_HOLDER_H_ADD]) {
-        rotate([0.0, 90.0, 0.0]) cylinder(
+        rotate([0.0, 90.0, 0.0]) #cylinder(
                 WALL_THICKNESS + O * 2.0
                     + CABLE_HOLDER_W_ADD + ZIP_TIE_HEAD_D + T * 2.0,
                 cable_r + T,
@@ -332,7 +332,7 @@ module cable_holder(cable_r, only_external_holes=false) {
                                 zip_tie_guide_r,
                                 false, $fn=128);
                         // Cut bottom half.
-                        translate([OA, -zip_tie_guide_r - O, -O]) #cube([
+                        translate([OA, -zip_tie_guide_r - O, -O]) cube([
                                 zip_tie_guide_r + O - OA,
                                 (zip_tie_guide_r + O) * 2.0,
                                 holder_w + O * 2.0]);
@@ -344,7 +344,7 @@ module cable_holder(cable_r, only_external_holes=false) {
         if (!only_external_holes) {
             #cable_holder_holes(cable_r, holder_w, holder_h_top);
         }
-        #cable_holder_external_holes(cable_r, holder_w);
+        cable_holder_external_holes(cable_r, holder_w);
     }
 }
 
