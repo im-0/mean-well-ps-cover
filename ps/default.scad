@@ -1,1 +1,1 @@
-./Mean-Well-RS-50.scad
+./Mean-Well-RS-25.scad

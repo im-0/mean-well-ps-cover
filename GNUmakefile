@@ -26,6 +26,7 @@ OPENSCAD ?= openscad
 
 ALL_POWER_SUPPLIES = \
 	default \
+	Mean-Well-RS-25 \
 	Mean-Well-RS-50
 
 WARN_IGNORE = Exported object may not be a valid 2-manifold and may need repair
@@ -56,9 +57,9 @@ out/%.stl: ps/%.scad mean-well-ps-cover.scad cover-defaults.scad local-overrides
 	$(CP) --verbose --recursive ./*.scad "./out/.build-$(*)/"
 	$(CP) --verbose --dereference "$(<)" "./out/.build-$(*)/ps/default.scad"
 
-	$(OPENSCAD) \
-		-o "./out/.build-$(*)/result.stl" \
-		"./mean-well-ps-cover.scad" 2>&1 | tee "./out/.build-$(*)/openscad.log"
+	cd "./out/.build-$(*)/" && $(OPENSCAD) \
+		-o "./result.stl" \
+		"./mean-well-ps-cover.scad" 2>&1 | tee "./openscad.log"
 	if $(GREP) --ignore-case --fixed-strings "WARNING" "./out/.build-$(*)/openscad.log" \
 			| grep --ignore-case --fixed-strings --invert-match "$(WARN_IGNORE)"; then \
 		false; \

@@ -22,54 +22,39 @@
  * Sizes of power supply.
  */
 
-PS_WIDTH = 99.0;
-PS_DEPTH = 97.0;
-PS_HEIGHT = 36.0;
+PS_WIDTH = 78.0;
+PS_DEPTH = 51.0;
+PS_HEIGHT = 28.0;
 
 // Width of overlap for terminals. Value should be slightly bigger than
 // real terminal width.
-PS_TERMINAL_OVERLAP = 20.0;
+PS_TERMINAL_OVERLAP = 6.0;
 // Set to non-zero value if terminal width is not included in PS_WIDTH.
-PS_TERMINAL_WIDTH = 0.0;
+PS_TERMINAL_WIDTH = 14.0;
 
 // Screws on bottom (horizontal plane).
 PS_H_SCREWS = [
-        [20.5 /* x */, PS_DEPTH - 51.5 /* y */],
-        [20.5 + 55.0,  PS_DEPTH - 51.5],
+        [PS_WIDTH - 55.0 - 10.5 /* x */, 25.4 /* y */],
+        [PS_WIDTH - 10.5,                25.4],
 ];
 
 // Screws on side (vertical plane).
 PS_V_SCREWS = [
-        [18.0 /* x */, 17.5 /* z */],
-        [18.0 + 74.0,  17.5],
+        [PS_WIDTH - 66.5 - 2.75 /* x */, 14.0 /* z */],
+        [PS_WIDTH - 2.75,                14.0],
 ];
 
 // Mounting screw hole radius.
 PS_SCREW_R = 3.0 / 2.0;  // For M3.
 
 // U-shaped notches.
-PS_HAS_U_NOTCHES = true;
-
-PS_H_U_NOTCH_Y = PS_DEPTH - 36.0;
-PS_V_U_NOTCH_Z = 28.0;
-
-PS_U_NOTCH_X = 4.5 + 89.0;
-PS_U_NOTCH_R = 3.5 / 2;
-PS_U_NOTCH_WIDTH = 5.5;
+PS_HAS_U_NOTCHES = false;
 
 // Additional mounting holes.
-PS_HAS_ADDITIONAL_MOUNT_HOLES = true;
-
-PS_H_HOLE_X = 4.5;
-PS_H_HOLE_Y = PS_H_U_NOTCH_Y - 55.5;
-
-PS_V_HOLE_X = 6.5;
-PS_V_HOLE_Z = PS_HEIGHT - 7.0;
-
-PS_HOLE_R = 3.5 / 2.0;
+PS_HAS_ADDITIONAL_MOUNT_HOLES = false;
 
 // Voltage adjustment potentiometer.
-PS_VOLT_ADJ_X = 5.5;
-PS_VOLT_ADJ_Y = 22.5;
-PS_VOLT_ADJ_Z = 0 / 0;
+PS_VOLT_ADJ_X = 0 / 0;
+PS_VOLT_ADJ_Y = 6.0;
+PS_VOLT_ADJ_Z = 11.0;
 

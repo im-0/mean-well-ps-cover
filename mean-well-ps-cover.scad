@@ -30,6 +30,9 @@ O = 1.0;
 // Overlap, used only for geometry addition.
 OA = 0.1;
 
+// For cases when width of terminals is not included in PS_WIDTH.
+CABLING_PLUS_TERMINALS = CABLING_WIDTH + PS_TERMINAL_WIDTH;
+
 
 module extruded_cylinder(h, r, e_y) {
     for (y_off = [-e_y / 2.0, e_y / 2.0]) {
@@ -44,28 +47,28 @@ module extruded_cylinder(h, r, e_y) {
 module basic_enclosure() {
     difference() {
         translate([
-                -WALL_THICKNESS - TPS - CABLING_WIDTH,
+                -WALL_THICKNESS - TPS - CABLING_PLUS_TERMINALS,
                 -WALL_THICKNESS - TPS,
                 -WALL_THICKNESS - TPS]) {
             cube([
-                    PS_WIDTH + WALL_THICKNESS + CABLING_WIDTH + TPS,
+                    PS_WIDTH + WALL_THICKNESS + CABLING_PLUS_TERMINALS + TPS,
                     PS_DEPTH + (WALL_THICKNESS + TPS) * 2.0,
                     PS_HEIGHT + (WALL_THICKNESS + TPS) * 2.0,
             ]);
         }
 
         translate([
-                -TPS + PS_TERMINAL_WIDTH,
+                -TPS + PS_TERMINAL_OVERLAP,
                 -TPS,
                 -TPS]) {
             cube([
-                    PS_WIDTH - PS_TERMINAL_WIDTH + TPS + O,
+                    PS_WIDTH - PS_TERMINAL_OVERLAP + TPS + O,
                     PS_DEPTH + WALL_THICKNESS + TPS * 2.0 + O,
                     PS_HEIGHT + WALL_THICKNESS + TPS * 2.0 + O]);
         }
 
-        translate([-TPS - CABLING_WIDTH, -TPS, -TPS]) cube([
-                PS_TERMINAL_WIDTH + CABLING_WIDTH + TPS + O,
+        translate([-TPS - CABLING_PLUS_TERMINALS, -TPS, -TPS]) cube([
+                PS_TERMINAL_OVERLAP + CABLING_PLUS_TERMINALS + TPS + O,
                 PS_DEPTH + TPS * 2.0,
                 PS_HEIGHT + TPS * 2.0]);
     }
@@ -354,15 +357,31 @@ module cable_holders(only_external_holes=false) {
         cable_r = holder[0];
         holder_y = holder[1];
 
-        translate([-TPS - CABLING_WIDTH, holder_y, -TPS]) {
+        translate([-TPS - CABLING_PLUS_TERMINALS, holder_y, -TPS]) {
             cable_holder(cable_r, only_external_holes);
         }
     }
 }
 
 
+function is_nan(x) = (x != x);
+
+
 module voltage_adjust_hole() {
-    translate([PS_VOLT_ADJ_X, PS_VOLT_ADJ_Y, PS_HEIGHT + TPS - O]) #cylinder(
+    trans_horiz = [
+            PS_VOLT_ADJ_X,
+            PS_VOLT_ADJ_Y,
+            PS_HEIGHT + TPS - O];
+    trans_vert = [
+            -TPS - CABLING_PLUS_TERMINALS + O,
+            PS_VOLT_ADJ_Y,
+            PS_VOLT_ADJ_Z];
+    trans = is_nan(PS_VOLT_ADJ_X)? trans_vert : trans_horiz;
+    rot_horiz = [0.0, 0.0, 0.0];
+    rot_vert = [0.0, -90.0, 0.0];
+    rot = is_nan(PS_VOLT_ADJ_X)? rot_vert : rot_horiz;
+
+    translate(trans) rotate(rot) #cylinder(
             WALL_THICKNESS + O * 2.0,
             TOOL_HOLE_R + T,
             TOOL_HOLE_R + T,
@@ -374,7 +393,10 @@ module final_enclosure() {
     difference() {
         basic_enclosure();
         mount_screw_holes();
-        u_notches();
+
+        if (PS_HAS_U_NOTCHES) {
+            u_notches();
+        }
 
         if (PS_HAS_ADDITIONAL_MOUNT_HOLES) {
             additional_mount_holes();
