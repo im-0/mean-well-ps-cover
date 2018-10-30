@@ -33,6 +33,8 @@ OA = 0.1;
 // For cases when width of terminals is not included in PS_WIDTH.
 CABLING_PLUS_TERMINALS = CABLING_WIDTH + PS_TERMINAL_WIDTH;
 
+ROTATE_FOR_3D_PRINTER = false;
+
 
 module extruded_cylinder(h, r, e_y) {
     for (y_off = [-e_y / 2.0, e_y / 2.0]) {
@@ -386,24 +388,28 @@ module voltage_adjust_hole() {
 
 
 module final_enclosure() {
-    difference() {
-        basic_enclosure();
-        mount_screw_holes();
+    rot = ROTATE_FOR_3D_PRINTER? [0.0, -90.0, 90.0] : [0.0, 0.0, 0.0];
 
-        if (PS_HAS_U_NOTCHES) {
-            u_notches();
+    rotate(rot) {
+        difference() {
+            basic_enclosure();
+            mount_screw_holes();
+
+            if (PS_HAS_U_NOTCHES) {
+                u_notches();
+            }
+
+            if (PS_HAS_ADDITIONAL_MOUNT_HOLES) {
+                additional_mount_holes();
+            }
+
+            cable_holders(true);
+            voltage_adjust_hole();
         }
 
-        if (PS_HAS_ADDITIONAL_MOUNT_HOLES) {
-            additional_mount_holes();
-        }
-
-        cable_holders(true);
-        voltage_adjust_hole();
+        legs();
+        cable_holders();
     }
-
-    legs();
-    cable_holders();
 }
 
 

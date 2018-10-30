@@ -24,6 +24,8 @@ PYTHON ?= python
 
 OPENSCAD ?= openscad
 
+ROTATE_FOR_3D_PRINTER ?= true
+
 ALL_POWER_SUPPLIES = \
 	default \
 	Mean-Well-RS-25 \
@@ -58,6 +60,7 @@ out/%.stl: ps/%.scad mean-well-ps-cover.scad cover-defaults.scad local-overrides
 	$(CP) --verbose --dereference "$(<)" "./out/.build-$(*)/ps/default.scad"
 
 	cd "./out/.build-$(*)/" && $(OPENSCAD) \
+		-D ROTATE_FOR_3D_PRINTER=$(ROTATE_FOR_3D_PRINTER) \
 		-o "./result.stl" \
 		"./mean-well-ps-cover.scad" 2>&1 | tee "./openscad.log"
 	if $(GREP) --ignore-case --fixed-strings "WARNING" "./out/.build-$(*)/openscad.log" \
