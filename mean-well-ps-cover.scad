@@ -1,6 +1,6 @@
-include <ps/default.scad>
-include <cover-defaults.scad>
-include <local-overrides.scad>
+include <./ps/default.scad>
+include <./cover-defaults.scad>
+include <./local-overrides.scad>
 
 /*
  * Other sizes.
