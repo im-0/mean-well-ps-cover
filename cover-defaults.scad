@@ -16,12 +16,13 @@ WALL_THICKNESS = 3.0;
 // Add some space for cables (near terminals).
 CABLING_WIDTH = 30.0;
 
-HAS_LEGS = true;
+NEED_LEGS = true;
 LEG_H = 3.5;
 LEG_TOP_R = 16.0 / 2.0;
 LEG_BOTTOM_R = 8.0 / 2.0;
 // Distance to edge.
-LEG_DISTANCE = 1.0;
+LEG_X_DISTANCE = 8.0;
+LEG_Y_DISTANCE = 1.0;
 
 TOOL_HOLE_R = 3.0;
 
@@ -36,7 +37,7 @@ CABLE_HOLDER_D_ADD = 4.0;
 CABLE_HOLDER_H_ADD = 4.0;
 
 CABLE_HOLDERS = [
-        [7.5 / 2.0 /* radius */, PS_DEPTH - 25.0 /* y */],
-        [7.5 / 2.0, 48.0],
+        [8.0 / 2.0 /* radius */, PS_DEPTH - 25.0 /* y */],
+        [8.0 / 2.0, 25.0],
 ];
 

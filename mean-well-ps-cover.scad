@@ -92,16 +92,15 @@ module mount_screw_holes() {
 module legs() {
     for (
             x = [
-                LEG_DISTANCE + LEG_TOP_R - (WALL_THICKNESS + T),
-                PS_WIDTH + CABLING_WIDTH - (LEG_DISTANCE + LEG_TOP_R)],
+                LEG_X_DISTANCE + LEG_TOP_R,
+                PS_WIDTH - (LEG_X_DISTANCE + LEG_TOP_R)],
             y = [
-                LEG_DISTANCE + LEG_TOP_R - (WALL_THICKNESS + T),
-                PS_DEPTH + WALL_THICKNESS + T
-                    - (LEG_DISTANCE + LEG_TOP_R)]) {
+                LEG_Y_DISTANCE + LEG_TOP_R,
+                PS_DEPTH - (LEG_Y_DISTANCE + LEG_TOP_R)]) {
         translate([
-                x - CABLING_WIDTH,
+                x,
                 y,
-                -LEG_H - (WALL_THICKNESS + T)]) {
+                -LEG_H - (WALL_THICKNESS + TPS)]) {
             cylinder(
                     LEG_H + OA,
                     LEG_BOTTOM_R,
@@ -301,7 +300,7 @@ module final_enclosure() {
         voltage_adjust_hole();
     }
 
-    if (HAS_LEGS) {
+    if (NEED_LEGS) {
         legs();
     }
 
