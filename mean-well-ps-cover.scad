@@ -13,6 +13,16 @@ O = 1.0;
 OA = 0.1;
 
 
+module extruded_cylinder(h, r, e_y) {
+    for (y_off = [-e_y / 2.0, e_y / 2.0]) {
+        translate([0.0, y_off, 0.0]) {
+            cylinder(h, r, r, false, $fn=64);
+        }
+    }
+    translate([-r, -e_y / 2.0, 0.0]) cube([r * 2.0, e_y, h]);
+}
+
+
 module basic_enclosure() {
     difference() {
         translate([
@@ -53,10 +63,10 @@ module mount_screw_holes() {
                 x,
                 PS_H_SCREWS_Y,
                 -cutter_h - TPS + O]) {
-            #cylinder(
+            #extruded_cylinder(
                     cutter_h,
-                    PS_SCREW_R + T, PS_SCREW_R + T,
-                    false, $fn=64);
+                    PS_SCREW_R + T,
+                    TPS * 2.0);
         }
     }
 
@@ -66,10 +76,10 @@ module mount_screw_holes() {
                 x,
                 -TPS + O,
                 PS_V_SCREWS_Z]) {
-            rotate([90.0, 0.0, 0.0]) #cylinder(
+            rotate([90.0, 0.0, 0.0]) #extruded_cylinder(
                     cutter_h,
-                    PS_SCREW_R + T, PS_SCREW_R + T,
-                    false, $fn=64);
+                    PS_SCREW_R + T,
+                    TPS * 2.0);
         }
     }
 }
@@ -134,11 +144,10 @@ module u_notches() {
 
 module mnt_hole_plus_tool_hole(distance) {
     // Screw hole.
-    translate([0.0, 0.0, -O - WALL_THICKNESS - TPS]) #cylinder(
+    translate([0.0, 0.0, -O - WALL_THICKNESS - TPS]) #extruded_cylinder(
             WALL_THICKNESS + O * 2.0,
             PS_HOLE_R + T,
-            PS_HOLE_R + T,
-            false, $fn=64);
+            TPS * 2.0);
 
     // Screwdriver hole.
     translate([0.0, 0.0, distance - O + TPS]) #cylinder(
