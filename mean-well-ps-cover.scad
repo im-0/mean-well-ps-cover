@@ -102,12 +102,12 @@ module u_cut() {
     translate([0.0, 0.0, -O - WALL_THICKNESS - TPS]) {
         #cylinder(
                 WALL_THICKNESS + O * 2.0,
-                PS_U_NOTCH_R + T,
-                PS_U_NOTCH_R + T,
+                PS_U_NOTCH_R + TPS,
+                PS_U_NOTCH_R + TPS,
                 false, $fn=64);
-        translate([0.0, -(PS_U_NOTCH_R + T), 0.0]) #cube([
+        translate([0.0, -(PS_U_NOTCH_R + TPS), 0.0]) #cube([
                 PS_U_NOTCH_WIDTH + O,
-                (PS_U_NOTCH_R + T) * 2.0,
+                (PS_U_NOTCH_R + TPS) * 2.0,
                 WALL_THICKNESS + O * 2.0]);
     }
 }
