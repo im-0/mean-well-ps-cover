@@ -11,10 +11,10 @@ T = 0.2;
 // on draws from the specification.
 TPS = 0.8;  // This value really applied twice in most cases.
 
-WALL_THICKNESS = 1.5;
+WALL_THICKNESS = 3.0;
 
 // Add some space for cables (near terminals).
-CABLING_WIDTH = 25.0;
+CABLING_WIDTH = 30.0;
 
 HAS_LEGS = true;
 LEG_H = 3.5;
