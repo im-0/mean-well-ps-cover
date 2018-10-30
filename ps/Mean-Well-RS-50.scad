@@ -12,14 +12,16 @@ PS_HEIGHT = 36.0;
 PS_TERMINAL_WIDTH = 20.0;
 
 // Screws on bottom (horizontal plane).
-PS_H_SCREWS_Y = PS_DEPTH - 51.5;
-PS_H_SCREW_1_X = 20.5;
-PS_H_SCREW_2_X = PS_H_SCREW_1_X + 55.0;
+PS_H_SCREWS = [
+        [20.5 /* x */, PS_DEPTH - 51.5 /* y */],
+        [20.5 + 55.0,  PS_DEPTH - 51.5],
+];
 
 // Screws on side (vertical plane).
-PS_V_SCREWS_Z = 17.5;
-PS_V_SCREW_1_X = 18.0;
-PS_V_SCREW_2_X = PS_V_SCREW_1_X + 74.0;
+PS_V_SCREWS = [
+        [18.0 /* x */, 17.5 /* z */],
+        [18.0 + 74.0,  17.5],
+];
 
 // Mounting screw hole radius.
 PS_SCREW_R = 3.0 / 2.0;  // For M3.

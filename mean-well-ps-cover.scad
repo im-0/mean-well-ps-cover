@@ -58,10 +58,12 @@ module mount_screw_holes() {
     cutter_h = WALL_THICKNESS + O * 2.0;
 
     // Horizontal plane.
-    for (x = [PS_H_SCREW_1_X, PS_H_SCREW_2_X]) {
+    for (screw = PS_H_SCREWS) {
+        x = screw[0];
+        y = screw[1];
         translate([
                 x,
-                PS_H_SCREWS_Y,
+                y,
                 -cutter_h - TPS + O]) {
             #extruded_cylinder(
                     cutter_h,
@@ -71,11 +73,13 @@ module mount_screw_holes() {
     }
 
     // Vertical plane.
-    for (x = [PS_V_SCREW_1_X, PS_V_SCREW_2_X]) {
+    for (screw = PS_V_SCREWS) {
+        x = screw[0];
+        z = screw[1];
         translate([
                 x,
                 -TPS + O,
-                PS_V_SCREWS_Z]) {
+                z]) {
             rotate([90.0, 0.0, 0.0]) #extruded_cylinder(
                     cutter_h,
                     PS_SCREW_R + T,
