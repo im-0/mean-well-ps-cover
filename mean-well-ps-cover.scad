@@ -111,13 +111,9 @@ module mount_screw_holes() {
 
 
 module legs() {
-    for (
-            x = [
-                LEG_X_DISTANCE + LEG_TOP_R,
-                PS_WIDTH - (LEG_X_DISTANCE + LEG_TOP_R)],
-            y = [
-                LEG_Y_DISTANCE + LEG_TOP_R,
-                PS_DEPTH - (LEG_Y_DISTANCE + LEG_TOP_R)]) {
+    for (leg = LEGS) {
+        x = leg[0];
+        y = leg[1];
         translate([
                 x,
                 y,
@@ -406,10 +402,7 @@ module final_enclosure() {
         voltage_adjust_hole();
     }
 
-    if (NEED_LEGS) {
-        legs();
-    }
-
+    legs();
     cable_holders();
 }
 

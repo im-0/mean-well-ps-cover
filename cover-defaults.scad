@@ -34,10 +34,15 @@ WALL_THICKNESS = 3.0;
 // Add some space for cables (near terminals).
 CABLING_WIDTH = 30.0;
 
-NEED_LEGS = true;
 LEG_H = 3.5;
 LEG_TOP_R = 16.0 / 2.0;
 LEG_BOTTOM_R = 8.0 / 2.0;
+LEGS = [
+    [12.0 + LEG_TOP_R - (CABLING_WIDTH + PS_TERMINAL_WIDTH + TPS + WALL_THICKNESS) /* x */, 1.0 + LEG_TOP_R /* y */],
+    [12.0 + LEG_TOP_R - (CABLING_WIDTH + PS_TERMINAL_WIDTH + TPS + WALL_THICKNESS),         PS_DEPTH - (1.0 + LEG_TOP_R) /* y */],
+    [PS_WIDTH - (8.0 + LEG_TOP_R),                                                          1.0 + LEG_TOP_R],
+    [PS_WIDTH - (8.0 + LEG_TOP_R),                                                          PS_DEPTH - (1.0 + LEG_TOP_R)],
+];
 // Distance to edge.
 LEG_X_DISTANCE = 8.0;
 LEG_Y_DISTANCE = 1.0;
