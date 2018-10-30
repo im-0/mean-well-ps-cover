@@ -20,6 +20,8 @@ MKDIR ?= mkdir
 CP ?= cp
 TEE ?= tee
 GREP ?= grep
+SED ?= sed
+SHA512SUM ?= sha512sum
 PYTHON ?= python
 
 OPENSCAD ?= openscad
@@ -27,7 +29,6 @@ OPENSCAD ?= openscad
 ROTATE_FOR_3D_PRINTER ?= true
 
 ALL_POWER_SUPPLIES = \
-	default \
 	Mean-Well-RS-25 \
 	Mean-Well-RS-50
 
@@ -79,4 +80,13 @@ default: out/default.stl
 
 .PHONY: all
 all: $(patsubst %,out/%.stl,$(ALL_POWER_SUPPLIES))
+
+$(patsubst %,downloadable/%.stl,$(ALL_POWER_SUPPLIES)): $(patsubst %,out/%.stl,$(ALL_POWER_SUPPLIES))
+	$(CP) --verbose $(^) "./downloadable/"
+
+downloadable/sha512sum.txt: $(patsubst %,downloadable/%.stl,$(ALL_POWER_SUPPLIES))
+	$(SHA512SUM) $(^) | $(SED) "s,downloadable/,," >"$(@)"
+
+.PHONY: downloadable
+downloadable: downloadable/sha512sum.txt
 
