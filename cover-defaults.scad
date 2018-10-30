@@ -4,13 +4,17 @@
  * Sizes not related to power supply itself.
  */
 
+// Tolerance for small objects (like holes), to make sure that everything
+// will fit in.
+T = 0.2;
+// Tolerance for power supply sizes. It is expected to be ~1mm larger than
+// on draws from the specification.
+TPS = 0.8;  // This value really applied twice in most cases.
+
 WALL_THICKNESS = 1.5;
 
 // Add some space for cables (near terminals).
 CABLING_WIDTH = 25.0;
-
-// Tolerance, to make sure that everything will fit in.
-T = 0.2;
 
 HAS_LEGS = true;
 LEG_H = 3.5;
