@@ -59,7 +59,7 @@ CABLE_HOLDER_D_ADD = 2.0;
 CABLE_HOLDER_H_ADD = 1.0;
 
 CABLE_HOLDERS = [
-        [8.0 / 2.0 /* radius */, PS_DEPTH - 25.0 /* y */],
-        [8.0 / 2.0, 25.0],
+        [8.0 / 2.0 /* radius */, PS_DEPTH - 10.9 /* y */],
+        [8.0 / 2.0,              PS_DEPTH - 34.2],
 ];
 
