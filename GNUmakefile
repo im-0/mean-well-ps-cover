@@ -32,8 +32,6 @@ ALL_POWER_SUPPLIES = \
 	Mean-Well-RS-25 \
 	Mean-Well-RS-50
 
-WARN_IGNORE = Exported object may not be a valid 2-manifold and may need repair
-
 .PHONY: help
 help:
 	@echo "Usage:"
@@ -64,8 +62,7 @@ out/%.stl: ps/%.scad mean-well-ps-cover.scad cover-defaults.scad local-overrides
 		-D ROTATE_FOR_3D_PRINTER=$(ROTATE_FOR_3D_PRINTER) \
 		-o "./result.stl" \
 		"./mean-well-ps-cover.scad" 2>&1 | tee "./openscad.log"
-	if $(GREP) --ignore-case --fixed-strings "WARNING" "./out/.build-$(*)/openscad.log" \
-			| grep --ignore-case --fixed-strings --invert-match "$(WARN_IGNORE)"; then \
+	if $(GREP) --ignore-case --fixed-strings "WARNING" "./out/.build-$(*)/openscad.log"; then \
 		false; \
 	else \
 		true; \

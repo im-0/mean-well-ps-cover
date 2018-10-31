@@ -30,6 +30,9 @@ O = 1.0;
 // Overlap, used only for geometry addition.
 OA = 0.1;
 
+// HACK: very small value to make resulting STL valid 2-manifold.
+E = 0.00001;
+
 // For cases when width of terminals is not included in PS_WIDTH.
 CABLING_PLUS_TERMINALS = CABLING_WIDTH + PS_TERMINAL_WIDTH;
 
@@ -268,7 +271,7 @@ module cable_holder_holes(cable_r, holder_w, holder_h) {
 
     for (y = [cable_r + T, -zip_tie_hole_d - cable_r - T]) {
         translate([
-                holder_w / 2.0 - zip_tie_hole_w / 2.0,
+                holder_w / 2.0 - zip_tie_hole_w / 2.0 + E,
                 y,
                 0.0]) {
             cube([
