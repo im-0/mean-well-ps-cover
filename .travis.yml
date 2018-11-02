@@ -1,0 +1,22 @@
+os:
+  - linux
+
+dist: trusty
+
+# To install additional packages.
+sudo: required
+
+before_install:
+  - sudo add-apt-repository -y ppa:openscad/releases
+  - sudo apt-get -qq update
+  - sudo apt-get install -y openscad
+
+script:
+  - make clean
+  - make default
+  - make -j2 all
+  - rm -v downloadable/*.stl
+  - make downloadable
+  # Check that downloadable STL files in git are the same as new one.
+  - git diff-index --quiet HEAD --
+
