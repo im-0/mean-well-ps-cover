@@ -15,8 +15,3 @@ script:
   - make clean
   - make default
   - make -j2 all
-  - rm -v downloadable/*.stl
-  - make downloadable
-  # Check that downloadable STL files in git are the same as new one.
-  - git diff-index --quiet HEAD --
-
