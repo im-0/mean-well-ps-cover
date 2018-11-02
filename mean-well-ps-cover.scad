@@ -391,29 +391,39 @@ module voltage_adjust_hole() {
 
 
 module final_enclosure() {
+    difference() {
+        basic_enclosure();
+        mount_screw_holes();
+
+        if (PS_HAS_U_NOTCHES) {
+            u_notches();
+        }
+
+        if (PS_HAS_ADDITIONAL_MOUNT_HOLES) {
+            additional_mount_holes();
+        }
+
+        cable_holders(true);
+        voltage_adjust_hole();
+    }
+
+    legs();
+    cable_holders();
+}
+
+
+module local_prepare() {
     rot = ROTATE_FOR_3D_PRINTER? [0.0, -90.0, 90.0] : [0.0, 0.0, 0.0];
 
     rotate(rot) {
         difference() {
-            basic_enclosure();
-            mount_screw_holes();
-
-            if (PS_HAS_U_NOTCHES) {
-                u_notches();
-            }
-
-            if (PS_HAS_ADDITIONAL_MOUNT_HOLES) {
-                additional_mount_holes();
-            }
-
-            cable_holders(true);
-            voltage_adjust_hole();
+            final_enclosure();
+            subtract_geometry();
         }
 
-        legs();
-        cable_holders();
+        additional_geometry();
     }
 }
 
 
-final_enclosure();
+local_prepare();

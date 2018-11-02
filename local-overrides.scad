@@ -22,3 +22,12 @@
  * Modify this file to override defaults.
  */
 
+
+module subtract_geometry() {
+    // Make more holes in base cover.
+}
+
+module additional_geometry() {
+    // Add more objects to base cover here.
+}
+
