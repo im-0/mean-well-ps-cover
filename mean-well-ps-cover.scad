@@ -16,6 +16,9 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+include <MCAD/2Dshapes.scad>
+include <MCAD/regular_shapes.scad>
+
 include <./ps/default.scad>
 include <./cover-defaults.scad>
 include <./local-overrides.scad>
@@ -37,6 +40,10 @@ E = 0.00001;
 CABLING_PLUS_TERMINALS = CABLING_WIDTH + PS_TERMINAL_WIDTH;
 
 ROTATE_FOR_3D_PRINTER = false;
+
+
+// Hack to suppress warning from MCAD.
+module test_square_pyramid() {}
 
 
 module extruded_cylinder(h, r, e_y) {
@@ -368,6 +375,24 @@ module cable_holders(only_external_holes=false) {
 function is_nan(x) = (x != x);
 
 
+module voltage_adjust_symbol() {
+    inner_r = TOOL_HOLE_R + T + VOLT_ADJ_SYM_INDENT;
+    half_a = VOLT_ADJ_SYM_ARC_A / 2.0;
+    donutSlice(inner_r, inner_r + VOLT_ADJ_SYM_THICHNESS, -half_a - OA, half_a + OA, $fn=64);
+    for (a = [
+                [0.0,   half_a],
+                [180.0, 180 - half_a]]) {
+        rotate([0.0, a[0], a[1]]) {
+            translate([
+                    inner_r + VOLT_ADJ_SYM_THICHNESS / 2.0,
+                    VOLT_ADJ_SYM_ARROW_R / 2.0,
+                    0.0]) {
+                triangle(VOLT_ADJ_SYM_ARROW_R);
+            }
+        }
+    }
+}
+
 module voltage_adjust_hole() {
     trans_horiz = [
             PS_VOLT_ADJ_X,
@@ -382,11 +407,17 @@ module voltage_adjust_hole() {
     rot_vert = [0.0, -90.0, 0.0];
     rot = is_nan(PS_VOLT_ADJ_X)? rot_vert : rot_horiz;
 
-    translate(trans) rotate(rot) #cylinder(
+    translate(trans) rotate(rot) {
+        #cylinder(
             WALL_THICKNESS + O * 2.0,
             TOOL_HOLE_R + T,
             TOOL_HOLE_R + T,
             false, $fn=64);
+
+        translate([0.0, 0.0, WALL_THICKNESS + O - VOLT_ADJ_SYM_D]) {
+            #linear_extrude(VOLT_ADJ_SYM_D + O) voltage_adjust_symbol();
+        }
+    }
 }
 
 

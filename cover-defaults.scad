@@ -65,3 +65,10 @@ CABLE_HOLDERS = [
         [8.0 / 2.0,              PS_DEPTH - 34.2],
 ];
 
+// Voltage adjustment symbol.
+VOLT_ADJ_SYM_INDENT = 2.0;  // From screwdriver hole.
+VOLT_ADJ_SYM_THICHNESS = 1.0;
+VOLT_ADJ_SYM_D = 0.8;  // Depth.
+VOLT_ADJ_SYM_ARROW_R = 2.0;
+VOLT_ADJ_SYM_ARC_A = 90.0;
+
