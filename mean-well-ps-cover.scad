@@ -41,6 +41,9 @@ CABLING_PLUS_TERMINALS = CABLING_WIDTH + PS_TERMINAL_WIDTH;
 
 ROTATE_FOR_3D_PRINTER = false;
 
+// Version number.
+VERSION = "0.1.0";
+
 
 // Hack to suppress warning from MCAD.
 module test_square_pyramid() {}
@@ -53,6 +56,16 @@ module extruded_cylinder(h, r, e_y) {
         }
     }
     translate([-r, -e_y / 2.0, 0.0]) cube([r * 2.0, e_y, h]);
+}
+
+
+module version_number() {
+    linear_extrude(VERSION_D + O) {
+        text(
+                VERSION,
+                VERSION_SIZE,
+                font="Liberation Mono:style=Bold");
+    }
 }
 
 
@@ -83,6 +96,13 @@ module basic_enclosure() {
                 PS_TERMINAL_OVERLAP + CABLING_PLUS_TERMINALS + TPS + O,
                 PS_DEPTH + TPS * 2.0,
                 PS_HEIGHT + TPS * 2.0]);
+
+        translate([
+                -TPS - CABLING_PLUS_TERMINALS - VERSION_D,
+                0.0,
+                PS_HEIGHT - VERSION_SIZE]) {
+            rotate([90.0, 0.0, 90.0]) #version_number();
+        }
     }
 }
 

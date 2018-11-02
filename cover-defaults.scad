@@ -72,3 +72,7 @@ VOLT_ADJ_SYM_D = 0.8;  // Depth.
 VOLT_ADJ_SYM_ARROW_R = 2.0;
 VOLT_ADJ_SYM_ARC_A = 90.0;
 
+// Version number.
+VERSION_SIZE = 4;  // Font size.
+VERSION_D = 0.6;  // Depth.
+
